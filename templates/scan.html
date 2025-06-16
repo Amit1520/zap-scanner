@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>VulnScan Pro - Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { 
+      background: #f6f8fa; 
+      font-family: 'Inter', system-ui, sans-serif; 
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content {
+      flex: 1;
+    }
+    .navbar {
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 1rem 0;
+    }
+    .navbar-brand {
+      font-weight: 800;
+      color: #2563eb;
+      font-size: 1.5rem;
+    }
+    .nav-link {
+      color: #4b5563;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+    .nav-link:hover {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+    .nav-link.active {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+    .footer {
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      padding: 2rem 0;
+      margin-top: auto;
+    }
+    .footer-link {
+      color: #6b7280;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link:hover {
+      color: #2563eb;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #4b5563;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+      margin-bottom: 1.5rem;
+    }
+    .back-btn:hover {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+    .rounded-xl { border-radius: 1.2rem !important; }
+    .shadow-sm { box-shadow: 0 2px 8px 0 #2563eb11 !important; }
+    .lucide { vertical-align: middle; }
+    .progress-bar-gradient {
+      background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+    }
+    .scan-btn { min-width: 140px; }
+    .scan-btn svg { margin-right: 0.5rem; }
+    .scan-type-radio:checked + .scan-type-label {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+    .scan-type-label {
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: border 0.2s, background 0.2s;
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .scan-type-label .desc { color: #6b7280; font-size: 0.95rem; }
+    .scan-type-label .duration { margin-left: auto; color: #2563eb; font-weight: 600; }
+    .test-checkbox:checked + .test-label { font-weight: 600; }
+    .test-label { margin-left: 0.5rem; }
+    .risk-badge { font-size: 0.8rem; border-radius: 0.5rem; padding: 0.2rem 0.7rem; margin-left: 0.5rem; }
+    .risk-critical { background: #fee2e2; color: #b91c1c; }
+    .risk-high { background: #ffedd5; color: #c2410c; }
+    .risk-medium { background: #fef9c3; color: #a16207; }
+    .risk-low { background: #dcfce7; color: #166534; }
+    .result-badge { font-size: 0.9rem; border-radius: 0.5rem; padding: 0.2rem 0.7rem; }
+    .result-critical { background: #fee2e2; color: #b91c1c; }
+    .result-high { background: #ffedd5; color: #c2410c; }
+    .result-medium { background: #fef9c3; color: #a16207; }
+    .result-low { background: #dcfce7; color: #166534; }
+    /* New styles for vulnerability tests */
+    .vuln-tests-container {
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    .vuln-test-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+    }
+    .vuln-test-item:hover {
+      border-color: #2563eb;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+    .vuln-test-item input[type="checkbox"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-right: 1rem;
+      cursor: pointer;
+    }
+    .vuln-test-item input[type="checkbox"]:checked + .test-label {
+      color: #2563eb;
+    }
+    .test-label {
+      flex: 1;
+      margin: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .test-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .test-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: #64748b;
+    }
+    .test-description {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+    .dropdown-menu {
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 0.75rem;
+      padding: 0.5rem;
+    }
+    .dropdown-item {
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: #4b5563;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .dropdown-item:hover {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+    .dropdown-item .url {
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: normal;
+    }
+    .dropdown-item .date {
+      color: #9ca3af;
+      font-size: 0.75rem;
+      margin-left: auto;
+    }
+    .dropdown-item .status-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 1rem;
+      margin-left: 0.5rem;
+    }
+    .status-completed {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .status-failed {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .status-running {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+    .dropdown-divider {
+      margin: 0.5rem 0;
+      border-color: #f1f5f9;
+    }
+    .dropdown-header {
+      color: #6b7280;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+    }
+    .view-all-link {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      display: block;
+      text-align: center;
+      border-top: 1px solid #f1f5f9;
+      margin-top: 0.5rem;
+    }
+    .view-all-link:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i data-lucide="shield-check" class="lucide me-2"></i>
+        VulnScan Pro
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i data-lucide="menu" class="lucide"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i data-lucide="home" class="lucide me-1"></i>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/scan">
+              <i data-lucide="target" class="lucide me-1"></i>
+              Scanner
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i data-lucide="file-text" class="lucide me-1"></i>
+              Reports
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><div class="dropdown-header">Recent Scans</div></li>
+              <li>
+                <a class="dropdown-item" href="/reports/1">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>tryhackme.com</div>
+                    <div class="url">https://tryhackme.com</div>
+                  </div>
+                  <span class="status-badge status-completed">Completed</span>
+                  <span class="date">2h ago</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/reports/2">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>example.com</div>
+                    <div class="url">https://example.com</div>
+                  </div>
+                  <span class="status-badge status-running">Running</span>
+                  <span class="date">5m ago</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/reports/3">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>test.com</div>
+                    <div class="url">https://test.com</div>
+                  </div>
+                  <span class="status-badge status-failed">Failed</span>
+                  <span class="date">1d ago</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item" href="/reports/4">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>demo.com</div>
+                    <div class="url">https://demo.com</div>
+                  </div>
+                  <span class="status-badge status-completed">Completed</span>
+                  <span class="date">2d ago</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/reports/5">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>sample.com</div>
+                    <div class="url">https://sample.com</div>
+                  </div>
+                  <span class="status-badge status-completed">Completed</span>
+                  <span class="date">3d ago</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a href="/reports" class="view-all-link">
+                  View All Reports
+                  <i data-lucide="arrow-right" class="lucide ms-1" style="width:1rem;height:1rem;"></i>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/settings">
+              <i data-lucide="settings" class="lucide me-1"></i>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container py-5">
+      <!-- Back Button -->
+      <a href="/" class="back-btn">
+        <i data-lucide="arrow-left" class="lucide"></i>
+        Back to Dashboard
+      </a>
+
+      <!-- Scanner Configuration -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-5">
+        <div class="d-flex align-items-center mb-4">
+          <div class="bg-blue-100 rounded-lg d-flex align-items-center justify-content-center" style="width:2.5rem;height:2.5rem;">
+            <i data-lucide="target" class="lucide" style="color:#2563eb;"></i>
+          </div>
+          <h2 class="h4 fw-bold text-dark ms-3 mb-0">Scanner Configuration</h2>
+        </div>
+        <form id="scanForm">
+          <div class="row g-4">
+            <div class="col-lg-6">
+              <label class="form-label">Target URL</label>
+              <div class="input-group mb-4">
+                <span class="input-group-text bg-white border-end-0"><i data-lucide="target" class="lucide" style="color:#94a3b8;"></i></span>
+                <input type="url" class="form-control border-start-0" id="targetUrl" placeholder="https://example.com" required>
+              </div>
+              <label class="form-label">Scan Type</label>
+              <div>
+                <input type="radio" name="scanType" id="scanTypeQuick" value="quick" class="scan-type-radio d-none" checked>
+                <label for="scanTypeQuick" class="scan-type-label mb-2">
+                  <span>Quick Scan</span>
+                  <span class="desc ms-2">Basic vulnerability detection</span>
+                  <span class="duration">5-10 min</span>
+                </label>
+                <input type="radio" name="scanType" id="scanTypeDeep" value="deep" class="scan-type-radio d-none">
+                <label for="scanTypeDeep" class="scan-type-label mb-2">
+                  <span>Deep Scan</span>
+                  <span class="desc ms-2">Comprehensive security analysis</span>
+                  <span class="duration">30-60 min</span>
+                </label>
+                <input type="radio" name="scanType" id="scanTypeCustom" value="custom" class="scan-type-radio d-none">
+                <label for="scanTypeCustom" class="scan-type-label">
+                  <span>Custom Scan</span>
+                  <span class="desc ms-2">Configure specific tests</span>
+                  <span class="duration">Variable</span>
+                </label>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label fw-semibold mb-3">Vulnerability Tests</label>
+              <div class="vuln-tests-container">
+                <div class="vuln-test-item">
+                  <input type="checkbox" id="testXSS" name="tests" value="xss" class="test-checkbox" checked>
+                  <label for="testXSS" class="test-label">
+                    <div class="test-info">
+                      <i data-lucide="shield-alert" class="test-icon"></i>
+                      <div>
+                        <div>Cross-Site Scripting (XSS)</div>
+                        <div class="test-description">Tests for script injection vulnerabilities</div>
+                      </div>
+                    </div>
+                    <span class="risk-badge risk-high">High Risk</span>
+                  </label>
+                </div>
+                <div class="vuln-test-item">
+                  <input type="checkbox" id="testSQLI" name="tests" value="sqli" class="test-checkbox" checked>
+                  <label for="testSQLI" class="test-label">
+                    <div class="test-info">
+                      <i data-lucide="database" class="test-icon"></i>
+                      <div>
+                        <div>SQL Injection</div>
+                        <div class="test-description">Tests for database query vulnerabilities</div>
+                      </div>
+                    </div>
+                    <span class="risk-badge risk-critical">Critical Risk</span>
+                  </label>
+                </div>
+                <div class="vuln-test-item">
+                  <input type="checkbox" id="testCSRF" name="tests" value="csrf" class="test-checkbox" checked>
+                  <label for="testCSRF" class="test-label">
+                    <div class="test-info">
+                      <i data-lucide="refresh-cw" class="test-icon"></i>
+                      <div>
+                        <div>Cross-Site Request Forgery</div>
+                        <div class="test-description">Tests for CSRF protection</div>
+                      </div>
+                    </div>
+                    <span class="risk-badge risk-medium">Medium Risk</span>
+                  </label>
+                </div>
+                <div class="vuln-test-item">
+                  <input type="checkbox" id="testRCE" name="tests" value="rce" class="test-checkbox" checked>
+                  <label for="testRCE" class="test-label">
+                    <div class="test-info">
+                      <i data-lucide="terminal" class="test-icon"></i>
+                      <div>
+                        <div>Remote Code Execution</div>
+                        <div class="test-description">Tests for command injection vulnerabilities</div>
+                      </div>
+                    </div>
+                    <span class="risk-badge risk-critical">Critical Risk</span>
+                  </label>
+                </div>
+                <div class="vuln-test-item">
+                  <input type="checkbox" id="testLFI" name="tests" value="lfi" class="test-checkbox" checked>
+                  <label for="testLFI" class="test-label">
+                    <div class="test-info">
+                      <i data-lucide="file" class="test-icon"></i>
+                      <div>
+                        <div>Local File Inclusion</div>
+                        <div class="test-description">Tests for file path traversal vulnerabilities</div>
+                      </div>
+                    </div>
+                    <span class="risk-badge risk-high">High Risk</span>
+                  </label>
+                </div>
+                <div class="vuln-test-item">
+                  <input type="checkbox" id="testXXE" name="tests" value="xxe" class="test-checkbox" checked>
+                  <label for="testXXE" class="test-label">
+                    <div class="test-info">
+                      <i data-lucide="file-code" class="test-icon"></i>
+                      <div>
+                        <div>XML External Entity</div>
+                        <div class="test-description">Tests for XXE vulnerabilities</div>
+                      </div>
+                    </div>
+                    <span class="risk-badge risk-high">High Risk</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mt-4">
+            <button type="submit" class="btn btn-primary scan-btn me-3" id="startScanBtn">
+              <i data-lucide="play" class="lucide"></i> Start Scan
+            </button>
+            <button type="button" class="btn btn-danger scan-btn d-none" id="stopScanBtn">
+              <i data-lucide="square" class="lucide"></i> Stop Scan
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Scan Progress -->
+      <div id="scanProgressSection" class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-5 d-none">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="h5 fw-semibold text-dark mb-0">Scan Progress</h3>
+          <div class="d-flex align-items-center">
+            <i data-lucide="zap" class="lucide me-2" style="color:#2563eb;"></i>
+            <span class="text-secondary" id="scanStatusText">Scanning...</span>
+          </div>
+        </div>
+        <div class="progress mb-3" style="height: 1.2rem;">
+          <div class="progress-bar progress-bar-gradient" id="scanProgressBar" role="progressbar" style="width: 0%"></div>
+        </div>
+        <div class="d-flex justify-content-between text-secondary small mb-2">
+          <span id="scanTargetText"></span>
+          <span id="scanPercentText">0% Complete</span>
+        </div>
+        <div class="text-primary fw-medium" id="currentTestText"></div>
+      </div>
+
+      <!-- Scan Results -->
+      <div id="scanResultsSection" class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-5 d-none">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <h3 class="h5 fw-semibold text-dark mb-0">Scan Results</h3>
+          <div>
+            <button class="btn btn-success me-2" id="downloadHtmlBtn">
+              <i data-lucide="download" class="lucide me-2"></i> Download HTML
+            </button>
+            <button class="btn btn-primary" id="downloadPdfBtn">
+              <i data-lucide="download" class="lucide me-2"></i> Download PDF
+            </button>
+          </div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="bg-danger bg-opacity-10 rounded-lg p-3 text-center">
+              <div class="h3 fw-bold text-danger mb-0" id="criticalCount">0</div>
+              <div class="small text-danger">Critical</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="bg-warning bg-opacity-10 rounded-lg p-3 text-center">
+              <div class="h3 fw-bold text-warning mb-0" id="highCount">0</div>
+              <div class="small text-warning">High</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="bg-warning bg-opacity-25 rounded-lg p-3 text-center">
+              <div class="h3 fw-bold text-warning mb-0" id="mediumCount">0</div>
+              <div class="small text-warning">Medium</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="bg-success bg-opacity-10 rounded-lg p-3 text-center">
+              <div class="h3 fw-bold text-success mb-0" id="lowCount">0</div>
+              <div class="small text-success">Low</div>
+            </div>
+          </div>
+        </div>
+        <div id="scanResultsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h5 class="fw-bold mb-3">VulnScan Pro</h5>
+          <p class="text-secondary mb-0">
+            Professional web vulnerability scanner powered by OWASP ZAP. 
+            Secure your web applications with advanced security testing.
+          </p>
+        </div>
+        <div class="col-lg-2">
+          <h6 class="fw-semibold mb-3">Product</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="/features" class="footer-link">Features</a></li>
+            <li class="mb-2"><a href="/pricing" class="footer-link">Pricing</a></li>
+            <li class="mb-2"><a href="/docs" class="footer-link">Documentation</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2">
+          <h6 class="fw-semibold mb-3">Company</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="/about" class="footer-link">About</a></li>
+            <li class="mb-2"><a href="/blog" class="footer-link">Blog</a></li>
+            <li class="mb-2"><a href="/contact" class="footer-link">Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h6 class="fw-semibold mb-3">Connect With Us</h6>
+          <div class="d-flex gap-3">
+            <a href="#" class="footer-link">
+              <i data-lucide="github" class="lucide"></i>
+            </a>
+            <a href="#" class="footer-link">
+              <i data-lucide="twitter" class="lucide"></i>
+            </a>
+            <a href="#" class="footer-link">
+              <i data-lucide="linkedin" class="lucide"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start">
+          <p class="text-secondary mb-0">
+            © 2024 VulnScan Pro. All rights reserved.
+          </p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <a href="/privacy" class="footer-link me-3">Privacy Policy</a>
+          <a href="/terms" class="footer-link">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    lucide.createIcons();
+    // --- AJAX integration with Flask backend ---
+    const scanForm = document.getElementById('scanForm');
+    const startScanBtn = document.getElementById('startScanBtn');
+    const stopScanBtn = document.getElementById('stopScanBtn');
+    const scanProgressSection = document.getElementById('scanProgressSection');
+    const scanResultsSection = document.getElementById('scanResultsSection');
+    const scanProgressBar = document.getElementById('scanProgressBar');
+    const scanPercentText = document.getElementById('scanPercentText');
+    const scanStatusText = document.getElementById('scanStatusText');
+    const scanTargetText = document.getElementById('scanTargetText');
+    const currentTestText = document.getElementById('currentTestText');
+    const scanResultsList = document.getElementById('scanResultsList');
+    const downloadHtmlBtn = document.getElementById('downloadHtmlBtn');
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const criticalCount = document.getElementById('criticalCount');
+    const highCount = document.getElementById('highCount');
+    const mediumCount = document.getElementById('mediumCount');
+    const lowCount = document.getElementById('lowCount');
+
+    let pollInterval = null;
+
+    scanForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const targetUrl = document.getElementById('targetUrl').value;
+      const scanType = document.querySelector('input[name="scanType"]:checked').value;
+      scanProgressSection.classList.remove('d-none');
+      scanResultsSection.classList.add('d-none');
+      startScanBtn.classList.add('d-none');
+      stopScanBtn.classList.remove('d-none');
+      scanTargetText.textContent = 'Target: ' + targetUrl;
+      scanPercentText.textContent = '0% Complete';
+      scanProgressBar.style.width = '0%';
+      scanStatusText.textContent = 'Scanning...';
+      currentTestText.textContent = '';
+      // Start scan via AJAX
+      fetch('/api/start_scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_url: targetUrl, scan_type: scanType })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.scan_id) {
+          pollScanStatus();
+        } else {
+          scanStatusText.textContent = data.error || 'Error starting scan.';
+        }
+      });
+    });
+
+    function pollScanStatus() {
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(() => {
+        fetch('/api/scan_status').then(res => res.json()).then(data => {
+          if (data.error) {
+            scanStatusText.textContent = data.error;
+            clearInterval(pollInterval);
+            startScanBtn.classList.remove('d-none');
+            stopScanBtn.classList.add('d-none');
+            return;
+          }
+          scanProgressBar.style.width = data.progress + '%';
+          scanPercentText.textContent = Math.round(data.progress) + '% Complete';
+          currentTestText.textContent = data.current_test || '';
+          if (data.done) {
+            scanStatusText.textContent = data.status === 'done' ? 'Completed' : (data.error || 'Error');
+            clearInterval(pollInterval);
+            showResults();
+          }
+        });
+      }, 1200);
+    }
+
+    stopScanBtn.addEventListener('click', function() {
+      fetch('/abort_scan', { method: 'POST' }).then(() => {
+        scanStatusText.textContent = 'Scan aborted.';
+        clearInterval(pollInterval);
+        startScanBtn.classList.remove('d-none');
+        stopScanBtn.classList.add('d-none');
+        scanProgressBar.style.width = '0%';
+        scanPercentText.textContent = '0% Complete';
+        currentTestText.textContent = '';
+      });
+    });
+
+    function showResults() {
+      fetch('/api/scan_status').then(res => res.json()).then(data => {
+        scanProgressSection.classList.add('d-none');
+        scanResultsSection.classList.remove('d-none');
+        startScanBtn.classList.remove('d-none');
+        stopScanBtn.classList.add('d-none');
+        // Update results summary with current scan's summary
+        const summary = data.summary || {critical:0, high:0, medium:0, low:0};
+        criticalCount.textContent = summary.critical;
+        highCount.textContent = summary.high;
+        mediumCount.textContent = summary.medium;
+        lowCount.textContent = summary.low;
+        scanResultsList.innerHTML = '<div class="text-secondary">Report is ready. Download for details.</div>';
+      });
+    }
+
+    downloadHtmlBtn.addEventListener('click', function() {
+      window.location.href = '/download/html';
+    });
+    downloadPdfBtn.addEventListener('click', function() {
+      window.location.href = '/download/pdf';
+    });
+  </script>
+</body>
+</html> 

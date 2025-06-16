@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>VulnScan Pro Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      background: #f6f8fa;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content {
+      flex: 1;
+    }
+    .navbar {
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 1rem 0;
+    }
+    .navbar-brand {
+      font-weight: 800;
+      color: #2563eb;
+      font-size: 1.5rem;
+    }
+    .nav-link {
+      color: #4b5563;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+    .nav-link:hover {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+    .nav-link.active {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+    .footer {
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      padding: 2rem 0;
+      margin-top: auto;
+    }
+    .footer-link {
+      color: #6b7280;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link:hover {
+      color: #2563eb;
+    }
+    .gradient-welcome {
+      background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+      border-radius: 1.5rem;
+      color: #fff;
+      padding: 2.5rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 32px 0 #2563eb22;
+    }
+    .icon-bubble {
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 5rem;
+      height: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+    }
+    .stat-card {
+      border-radius: 1.2rem;
+      box-shadow: 0 2px 8px 0 #2563eb11;
+      border: 1px solid #f1f5f9;
+      background: #fff;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .stat-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      font-size: 1.5rem;
+    }
+    .stat-blue { background: #eff6ff; color: #2563eb; }
+    .stat-red { background: #fef2f2; color: #dc2626; }
+    .stat-orange { background: #fff7ed; color: #ea580c; }
+    .stat-green { background: #f0fdf4; color: #16a34a; }
+    .rounded-xl { border-radius: 1.2rem !important; }
+    .shadow-sm { box-shadow: 0 2px 8px 0 #2563eb11 !important; }
+    .quick-action-btn {
+      padding: 1.5rem 1rem;
+      border-radius: 1rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: left;
+      transition: background 0.2s;
+      border: none;
+      margin-bottom: 0.5rem;
+    }
+    .quick-blue { background: #eff6ff; color: #2563eb; }
+    .quick-blue:hover { background: #dbeafe; }
+    .quick-purple { background: #f3e8ff; color: #7c3aed; }
+    .quick-purple:hover { background: #ede9fe; }
+    .quick-green { background: #f0fdf4; color: #16a34a; }
+    .quick-green:hover { background: #dcfce7; }
+    .lucide { vertical-align: middle; }
+    .dropdown-menu {
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 0.75rem;
+      padding: 0.5rem;
+    }
+    .dropdown-item {
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: #4b5563;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .dropdown-item:hover {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+    .dropdown-item .url {
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: normal;
+    }
+    .dropdown-item .date {
+      color: #9ca3af;
+      font-size: 0.75rem;
+      margin-left: auto;
+    }
+    .dropdown-item .status-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 1rem;
+      margin-left: 0.5rem;
+    }
+    .status-completed {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .status-failed {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .status-running {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+    .dropdown-divider {
+      margin: 0.5rem 0;
+      border-color: #f1f5f9;
+    }
+    .dropdown-header {
+      color: #6b7280;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+    }
+    .view-all-link {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      display: block;
+      text-align: center;
+      border-top: 1px solid #f1f5f9;
+      margin-top: 0.5rem;
+    }
+    .view-all-link:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i data-lucide="shield-check" class="lucide me-2"></i>
+        VulnScan Pro
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i data-lucide="menu" class="lucide"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/">
+              <i data-lucide="home" class="lucide me-1"></i>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/scan">
+              <i data-lucide="target" class="lucide me-1"></i>
+              Scanner
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i data-lucide="file-text" class="lucide me-1"></i>
+              Reports
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><div class="dropdown-header">Recent Scans</div></li>
+              <li>
+                <a class="dropdown-item" href="/reports/1">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>tryhackme.com</div>
+                    <div class="url">https://tryhackme.com</div>
+                  </div>
+                  <span class="status-badge status-completed">Completed</span>
+                  <span class="date">2h ago</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/reports/2">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>example.com</div>
+                    <div class="url">https://example.com</div>
+                  </div>
+                  <span class="status-badge status-running">Running</span>
+                  <span class="date">5m ago</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/reports/3">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>test.com</div>
+                    <div class="url">https://test.com</div>
+                  </div>
+                  <span class="status-badge status-failed">Failed</span>
+                  <span class="date">1d ago</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item" href="/reports/4">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>demo.com</div>
+                    <div class="url">https://demo.com</div>
+                  </div>
+                  <span class="status-badge status-completed">Completed</span>
+                  <span class="date">2d ago</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/reports/5">
+                  <i data-lucide="globe" class="lucide" style="width:1.25rem;height:1.25rem;"></i>
+                  <div>
+                    <div>sample.com</div>
+                    <div class="url">https://sample.com</div>
+                  </div>
+                  <span class="status-badge status-completed">Completed</span>
+                  <span class="date">3d ago</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a href="/reports" class="view-all-link">
+                  View All Reports
+                  <i data-lucide="arrow-right" class="lucide ms-1" style="width:1rem;height:1rem;"></i>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/settings">
+              <i data-lucide="settings" class="lucide me-1"></i>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container py-5">
+      <!-- Welcome Section -->
+      <div class="gradient-welcome d-flex flex-column flex-lg-row align-items-center justify-content-between mb-5">
+        <div>
+          <h2 class="display-5 fw-bold mb-2">Welcome to VulnScan Pro</h2>
+          <p class="lead mb-1">Comprehensive web vulnerability scanning powered by OWASP ZAP</p>
+          <p class="mb-0" style="color: #dbeafe;">Get started by running your first security scan</p>
+        </div>
+        <div class="icon-bubble d-none d-lg-flex ms-4">
+          <i data-lucide="zap" class="lucide" style="width:2.5rem;height:2.5rem;"></i>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="row g-4 mb-5">
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-secondary small fw-medium">Total Scans</div>
+              <div class="h3 fw-bold mb-0">{{ summary.total_scans }}</div>
+            </div>
+            <div class="stat-icon stat-blue">
+              <i data-lucide="target" class="lucide"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-secondary small fw-medium">Critical Issues</div>
+              <div class="h3 fw-bold mb-0">{{ summary.critical }}</div>
+            </div>
+            <div class="stat-icon stat-red">
+              <i data-lucide="x-circle" class="lucide"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-secondary small fw-medium">High Risk</div>
+              <div class="h3 fw-bold mb-0">{{ summary.high }}</div>
+            </div>
+            <div class="stat-icon stat-orange">
+              <i data-lucide="alert-triangle" class="lucide"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-secondary small fw-medium">Medium/Low</div>
+              <div class="h3 fw-bold mb-0">{{ summary.medium + summary.low }}</div>
+            </div>
+            <div class="stat-icon stat-green">
+              <i data-lucide="check-circle" class="lucide"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Getting Started & Security Tips -->
+      <div class="row g-4 mb-5">
+        <div class="col-12 col-lg-6">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="p-4 border-bottom">
+              <h3 class="h5 fw-semibold text-dark mb-0">Getting Started</h3>
+            </div>
+            <div class="p-4 text-center">
+              <i data-lucide="target" class="lucide" style="width:3.5rem;height:3.5rem;color:#d1d5db;"></i>
+              <h4 class="h6 fw-medium text-dark mt-3 mb-2">No scans yet</h4>
+              <p class="text-secondary mb-4">Start your first security scan to identify vulnerabilities in your web applications.</p>
+              <button class="btn btn-primary px-4 py-2 rounded-lg" onclick="window.location.href='/scan'">Start Your First Scan</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="p-4 border-bottom">
+              <h3 class="h5 fw-semibold text-dark mb-0">Security Best Practices</h3>
+            </div>
+            <div class="p-4">
+              <div class="d-flex align-items-start mb-3">
+                <div class="rounded-circle me-3" style="width:0.75rem;height:0.75rem;background:#2563eb;"></div>
+                <div>
+                  <div class="fw-medium text-dark">Regular Scanning</div>
+                  <div class="text-secondary small">Perform security scans regularly to catch new vulnerabilities</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-start mb-3">
+                <div class="rounded-circle me-3" style="width:0.75rem;height:0.75rem;background:#16a34a;"></div>
+                <div>
+                  <div class="fw-medium text-dark">OWASP Top 10</div>
+                  <div class="text-secondary small">Focus on the most critical web application security risks</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-start">
+                <div class="rounded-circle me-3" style="width:0.75rem;height:0.75rem;background:#7c3aed;"></div>
+                <div>
+                  <div class="fw-medium text-dark">Remediation</div>
+                  <div class="text-secondary small">Address critical and high-risk vulnerabilities first</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-5">
+        <h3 class="h5 fw-semibold text-dark mb-4">Quick Actions</h3>
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <button class="quick-action-btn quick-blue w-100" onclick="window.location.href='/scan'">
+              <i data-lucide="shield" class="lucide me-2"></i>
+              Quick Scan
+              <div class="small text-secondary mt-1">Start a fast vulnerability scan (5-10 minutes)</div>
+            </button>
+          </div>
+          <div class="col-12 col-md-4">
+            <button class="quick-action-btn quick-purple w-100">
+              <i data-lucide="trending-up" class="lucide me-2"></i>
+              Deep Scan
+              <div class="small text-secondary mt-1">Comprehensive security analysis (30-60 minutes)</div>
+            </button>
+          </div>
+          <div class="col-12 col-md-4">
+            <button class="quick-action-btn quick-green w-100">
+              <i data-lucide="file-text" class="lucide me-2"></i>
+              View Documentation
+              <div class="small text-secondary mt-1">Learn about vulnerability types and remediation</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h5 class="fw-bold mb-3">VulnScan Pro</h5>
+          <p class="text-secondary mb-0">
+            Professional web vulnerability scanner powered by OWASP ZAP. 
+            Secure your web applications with advanced security testing.
+          </p>
+        </div>
+        <div class="col-lg-2">
+          <h6 class="fw-semibold mb-3">Product</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="/features" class="footer-link">Features</a></li>
+            <li class="mb-2"><a href="/pricing" class="footer-link">Pricing</a></li>
+            <li class="mb-2"><a href="/docs" class="footer-link">Documentation</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2">
+          <h6 class="fw-semibold mb-3">Company</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="/about" class="footer-link">About</a></li>
+            <li class="mb-2"><a href="/blog" class="footer-link">Blog</a></li>
+            <li class="mb-2"><a href="/contact" class="footer-link">Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h6 class="fw-semibold mb-3">Connect With Us</h6>
+          <div class="d-flex gap-3">
+            <a href="#" class="footer-link">
+              <i data-lucide="github" class="lucide"></i>
+            </a>
+            <a href="#" class="footer-link">
+              <i data-lucide="twitter" class="lucide"></i>
+            </a>
+            <a href="#" class="footer-link">
+              <i data-lucide="linkedin" class="lucide"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start">
+          <p class="text-secondary mb-0">
+            © 2024 VulnScan Pro. All rights reserved.
+          </p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <a href="/privacy" class="footer-link me-3">Privacy Policy</a>
+          <a href="/terms" class="footer-link">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html> 

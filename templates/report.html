@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan Report</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at 60% 0%, #22304a 0%, #0a101a 100%);
+            color: #e5e7eb;
+            font-family: 'Inter', 'Segoe UI', 'Arial', system-ui, sans-serif;
+            letter-spacing: 0.01em;
+        }
+        .navbar {
+            background: rgba(10,16,26,0.95);
+            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.2);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 2.1rem;
+            color: #fff !important;
+            letter-spacing: 1px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .navbar-brand .accent {
+            color: #60a5fa;
+            text-shadow: 0 0 8px #2563eb44;
+        }
+        .nav-link, .navbar-text {
+            color: #b6c2d1 !important;
+            font-size: 1rem;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .nav-link.active, .nav-link:focus, .nav-link:hover {
+            color: #60a5fa !important;
+        }
+        .main-content {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .frosted-card {
+            background: rgba(24,34,50,0.88);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.28);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255,255,255,0.10);
+            padding: 2.7rem 2.2rem 2.2rem 2.2rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .main-title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #e5e7eb;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            font-family: 'Inter', system-ui, sans-serif;
+            text-shadow: 0 2px 24px #2563eb33, 0 1px 0 #111;
+        }
+        .main-title .accent {
+            background: linear-gradient(90deg, #60a5fa 30%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px #2563eb55);
+        }
+        .subtitle {
+            color: #b6c2d1;
+            font-size: 1.13rem;
+            text-align: center;
+            margin-bottom: 2.2rem;
+            font-weight: 400;
+        }
+        .success-icon {
+            color: #60faaf;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 16px #60faaf33;
+        }
+        .btn-custom {
+            background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.13rem;
+            padding: 0.9rem 2.2rem;
+            margin-bottom: 1rem;
+            margin-right: 0.5rem;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 12px 0 #2563eb33;
+            color: #fff;
+            display: inline-block;
+            letter-spacing: 0.01em;
+        }
+        .btn-custom:last-child { margin-right: 0; }
+        .btn-custom:hover, .btn-custom:focus {
+            background: linear-gradient(90deg, #60a5fa 0%, #2563eb 100%);
+            color: #182232;
+            box-shadow: 0 4px 24px 0 #60a5fa33;
+        }
+        .btn-custom:active {
+            background: #2563eb;
+            color: #fff;
+        }
+        .btn-outline-custom {
+            background: transparent;
+            border: 1.5px solid #60a5fa;
+            color: #60a5fa;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.13rem;
+            padding: 0.9rem 2.2rem;
+            margin-top: 1rem;
+            transition: background 0.2s, color 0.2s;
+            letter-spacing: 0.01em;
+        }
+        .btn-outline-custom:hover, .btn-outline-custom:focus {
+            background: #60a5fa;
+            color: #182232;
+        }
+        .footer {
+            width: 100%;
+            text-align: center;
+            color: #6b7280;
+            font-size: 1rem;
+            padding: 2.5rem 0 1.2rem 0;
+            letter-spacing: 0.02em;
+        }
+        .footer a { color: #60a5fa; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        @media (max-width: 600px) {
+            .main-title { font-size: 1.3rem; }
+            .frosted-card { padding: 1.2rem 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ZAP<span class="accent">Scanner</span></a>
+            <span class="navbar-text ms-auto">Web Vulnerability Dashboard</span>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="frosted-card">
+            <div class="success-icon mb-2">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="main-title mb-2">
+                <span class="accent">Scan</span> Complete
+            </div>
+            <div class="subtitle mb-4">
+                Your vulnerability scan has been completed successfully.<br>
+                Download your report below:
+            </div>
+            <a href="/download/html" class="btn btn-custom">
+                <i class="bi bi-file-earmark-text me-2"></i>Download HTML
+            </a>
+            <a href="/download/pdf" class="btn btn-custom">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Download PDF
+            </a>
+            <br>
+            <a href="/" class="btn btn-outline-custom">
+                <i class="bi bi-arrow-left me-2"></i>Start New Scan
+            </a>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2024 ZAPScanner &mdash; Inspired by <a href="https://haveibeenpwned.com/" target="_blank">Have I Been Pwned</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
