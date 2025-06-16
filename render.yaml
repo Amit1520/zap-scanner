@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: zap-scanner-web
+    name: zap-scanner
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
+    buildCommand: ""
+    startCommand: ./start.sh
     envVars:
-      - key: SECRET_KEY
-        generateValue: true
-      - key: FLASK_ENV
-        value: production 
+      - key: ZAP_API_KEY
+        value: vdj5e9d20m07aned0tmvdn3e69
+    autoDeploy: true
+    plan: free
